@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 0.1.1+2
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -23,8 +23,35 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-
+  # MobX related libraries
+  mobx: ^1.2.1+4
+  flutter_mobx: ^1.1.0+2
+  # Dependency injection
+  provider: ^4.1.0
+  # Network calling
+  http: ^0.12.2
+  # Splash screen manager
+  splashscreen: ^1.2.0
+  # Shared Preferences access
+  shared_preferences: ^0.5.12
+  # Pick images from the camera or the file system
+  image_picker: ^0.6.6+5
+  # Pick audio files
+  file_picker: ^2.0.11
+  # API access to upload audio and profile picture
+  cloudinary_public: ^0.6.2
+  # Audio recording
+  flutter_sound: ^6.3.1+1
+  # Handling permissions
+  permission_handler: ^5.0.1+1
+  # Obtain internal paths to store temporal files
+  path_provider: ^1.6.22
+  # Reproduce audio
+  audioplayers: ^0.17.0
+  # Loading animations
+  flutter_spinkit: ^4.1.2
+  # Bottom dialog when deleting posts
+  adaptive_action_sheet: ^1.0.8
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
@@ -32,12 +59,24 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  build_runner: ^1.10.4
+  # MobX code generation (.g stores)
+  mobx_codegen: ^1.1.1+3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
+  fonts:
+    - family: Raleway
+      fonts:
+        - asset: fonts/Raleway-Regular.ttf
+        - asset: fonts/Raleway-Italic.ttf
+          style: italic
+
+  assets:
+    - assets/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
