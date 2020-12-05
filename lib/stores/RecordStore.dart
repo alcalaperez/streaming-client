@@ -29,6 +29,9 @@ abstract class _RecordStore with Store {
           httpClient.uploadAudio(description, audio).then((users) => users));
 
   Future<void> uploadRecording(String description, BuildContext context) async {
+    if(description.isEmpty) {
+      description = "Checkout this audio!";
+    }
     Directory tempDir = await getTemporaryDirectory();
     await uploadAudio(
         description, File('${tempDir.path}/flutter_sound-tmp.aac'));
@@ -38,6 +41,9 @@ abstract class _RecordStore with Store {
 
   Future<void> uploadFile(
       String description, File audio, BuildContext context) async {
+    if(description.isEmpty) {
+      description = "Checkout this audio!";
+    }
     await uploadAudio(description, audio);
     urlAudioFuture = null;
     Navigator.pushNamed(context, "/homepage");

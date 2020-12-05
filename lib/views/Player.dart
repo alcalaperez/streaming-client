@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rec_you/stores/AudioStore.dart';
 
 enum PlayerState { stopped, playing, paused }
 enum PlayingRouteState { speakers, earpiece }
@@ -24,8 +26,7 @@ class PlayerWidget extends StatefulWidget {
 class _PlayerWidgetState extends State<PlayerWidget> {
   String url;
   PlayerMode mode;
-
-  AudioPlayer _audioPlayer;
+  AudioStore audioStore;
   AudioPlayerState _audioPlayerState;
   Duration _duration;
   Duration _position;
@@ -58,7 +59,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   @override
   void initState() {
     super.initState();
-    _audioPlayer = AudioPlayer(mode: mode);
+    audioStore = Provider.of<AudioStore>(context, listen: false);
     _initAudioPlayer();
     _stop();
     play(widget.url);
@@ -67,7 +68,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   @override
   void dispose() {
     _stop();
-    _audioPlayer.dispose();
+    audioStore.audioPlayer.dispose();
     _durationSubscription?.cancel();
     _positionSubscription?.cancel();
     _playerCompleteSubscription?.cancel();
@@ -91,7 +92,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
         key: Key('play_button'),
         onPressed: () async {
           if(_isPaused){
-            final result = await _audioPlayer.resume();
+            final result = await audioStore.audioPlayer.resume();
             if (result == 1) setState(() => _playerState = PlayerState.playing);
           } else {
             play(widget.url);
@@ -126,7 +127,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
               child: Slider(
                 onChanged: (v) {
                   final position = v * _duration.inMilliseconds;
-                  _audioPlayer.seek(Duration(milliseconds: position.round()));
+                  audioStore.audioPlayer.seek(Duration(milliseconds: position.round()));
                 },
                 divisions: 100,
                 label: (_position != null &&
@@ -154,16 +155,16 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   }
 
   void _initAudioPlayer() {
-    _durationSubscription = _audioPlayer.onDurationChanged.listen((duration) {
+    _durationSubscription = audioStore.audioPlayer.onDurationChanged.listen((duration) {
       setState(() => _duration = duration);
 
       // Implemented for iOS, waiting for android impl
       if (Theme.of(context).platform == TargetPlatform.iOS) {
         // (Optional) listen for notification updates in the background
-        _audioPlayer.startHeadlessService();
+        audioStore.audioPlayer.startHeadlessService();
 
         // set at least title to see the notification bar on ios.
-        _audioPlayer.setNotification(
+        audioStore.audioPlayer.setNotification(
           title: 'RecYou',
           // forwardSkipInterval: const Duration(seconds: 30), // default is 30s
           // backwardSkipInterval: const Duration(seconds: 30), // default is 30s
@@ -176,19 +177,19 @@ class _PlayerWidgetState extends State<PlayerWidget> {
     });
 
     _positionSubscription =
-        _audioPlayer.onAudioPositionChanged.listen((p) => setState(() {
+        audioStore.audioPlayer.onAudioPositionChanged.listen((p) => setState(() {
               _position = p;
             }));
 
     _playerCompleteSubscription =
-        _audioPlayer.onPlayerCompletion.listen((event) {
+        audioStore.audioPlayer.onPlayerCompletion.listen((event) {
       _onComplete();
       setState(() {
         _position = _duration;
       });
     });
 
-    _playerErrorSubscription = _audioPlayer.onPlayerError.listen((msg) {
+    _playerErrorSubscription = audioStore.audioPlayer.onPlayerError.listen((msg) {
       print('audioPlayer error : $msg');
       setState(() {
         _playerState = PlayerState.stopped;
@@ -198,18 +199,18 @@ class _PlayerWidgetState extends State<PlayerWidget> {
     });
 
     _playerControlCommandSubscription =
-        _audioPlayer.onPlayerCommand.listen((command) {
+        audioStore.audioPlayer.onPlayerCommand.listen((command) {
       print('command');
     });
 
-    _audioPlayer.onPlayerStateChanged.listen((state) {
+    audioStore.audioPlayer.onPlayerStateChanged.listen((state) {
       if (!mounted) return;
       setState(() {
         _audioPlayerState = state;
       });
     });
 
-    _audioPlayer.onNotificationPlayerStateChanged.listen((state) {
+    audioStore.audioPlayer.onNotificationPlayerStateChanged.listen((state) {
       if (!mounted) return;
       setState(() => _audioPlayerState = state);
     });
@@ -224,26 +225,26 @@ class _PlayerWidgetState extends State<PlayerWidget> {
             _position.inMilliseconds < _duration.inMilliseconds)
         ? _position
         : null;
-    _audioPlayer.stop();
-    final result = await _audioPlayer.play(url);
+    audioStore.audioPlayer.stop();
+    final result = await audioStore.audioPlayer.play(url);
     if (result == 1) setState(() => _playerState = PlayerState.playing);
 
     // default playback rate is 1.0
     // this should be called after _audioPlayer.play() or _audioPlayer.resume()
     // this can also be called everytime the user wants to change playback rate in the UI
-    _audioPlayer.setPlaybackRate(playbackRate: 1.0);
+    audioStore.audioPlayer.setPlaybackRate(playbackRate: 1.0);
 
     return result;
   }
 
   Future<int> _pause() async {
-    final result = await _audioPlayer.pause();
+    final result = await audioStore.audioPlayer.pause();
     if (result == 1) setState(() => _playerState = PlayerState.paused);
     return result;
   }
 
   Future<int> _stop() async {
-    final result = await _audioPlayer.stop();
+    final result = await audioStore.audioPlayer.stop();
     if (result == 1) {
       setState(() {
         _playerState = PlayerState.stopped;

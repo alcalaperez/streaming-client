@@ -76,6 +76,7 @@ class _Login extends State<Login> {
   @override
     Widget build(BuildContext context) {
     store = Provider.of<UserStore>(context);
+    store.resetUI();
 
     return Scaffold(
         resizeToAvoidBottomInset: false,

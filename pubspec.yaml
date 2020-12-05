@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 0.1.1+2
+version: 0.6.0+5
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -42,12 +42,12 @@ dependencies:
   cloudinary_public: ^0.6.2
   # Audio recording
   flutter_sound: ^6.3.1+1
+  # Reproduce audio
+  audioplayers: ^0.17.0
   # Handling permissions
   permission_handler: ^5.0.1+1
   # Obtain internal paths to store temporal files
   path_provider: ^1.6.22
-  # Reproduce audio
-  audioplayers: ^0.17.0
   # Loading animations
   flutter_spinkit: ^4.1.2
   # Bottom dialog when deleting posts

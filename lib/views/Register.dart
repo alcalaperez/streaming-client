@@ -114,6 +114,7 @@ class _Register extends State<Register> {
   @override
   Widget build(BuildContext context) {
     store = Provider.of<UserStore>(context);
+    store.resetUI();
 
     return Scaffold(
         resizeToAvoidBottomInset: false,

@@ -81,6 +81,8 @@ abstract class _UserStore with Store {
     error = value;
     borderColor = Colors.red;
     errorText = errorT;
+    networkCallResult = null;
+    userExist = null;
   }
 
   /// Logic abstraction that uses [login()] and checks the result
@@ -104,13 +106,20 @@ abstract class _UserStore with Store {
     }
   }
 
+  resetUI(){
+    borderColor = Colors.white;
+    errorText = "";
+  }
+
   /// Logic abstraction that uses [register()] and checks the result
   ///
   /// Sets an error message if the user exists or passwords are not the same
   /// Navigates to the [HomePage] and updates the global [SharedPreferences()]
   Future<void> registerUser(
       String user, String pass, String repass, BuildContext context) async {
-    await userAlreadyExist(user);
+    if(user != "" || user.isNotEmpty) {
+      await userAlreadyExist(user);
+    }
 
     if (user.isEmpty ||
         pass.isEmpty ||

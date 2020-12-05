@@ -37,6 +37,11 @@ class CustomComponents {
       if (pstore.profileStore.isFollowed) {
         return FlatButton(
           child: Text("Unfollow " + username),
+          color: Colors.black,
+          shape: RoundedRectangleBorder(
+              side: BorderSide(
+                  color: Colors.white, width: 1, style: BorderStyle.solid),
+              borderRadius: BorderRadius.circular(20)),
           onPressed: () {
             pstore.getThePostsAndUnfollow(username);
             Navigator.pop(context);
@@ -45,6 +50,11 @@ class CustomComponents {
       } else {
         return FlatButton(
           child: Text("Follow " + username),
+          color: Colors.black,
+          shape: RoundedRectangleBorder(
+              side: BorderSide(
+                  color: Colors.white, width: 1, style: BorderStyle.solid),
+              borderRadius: BorderRadius.circular(20)),
           onPressed: () {
             pstore.getThePostsAndFollow(username);
             Navigator.pop(context);
@@ -61,7 +71,8 @@ class CustomComponents {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CustomComponents()
-              .followUnfollowButton(pstore, context, profile.username)
+              .followUnfollowButton(pstore, context, profile.username),
+          SizedBox(height: 20)
         ],
       ),
       Row(
@@ -96,6 +107,7 @@ class CustomComponents {
                   });
             },
           ),
+          SizedBox(width: 10),
           FlatButton(
             child: Text("Following: " + profile.following.length.toString()),
             onPressed: () {
