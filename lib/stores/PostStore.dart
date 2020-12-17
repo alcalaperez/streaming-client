@@ -12,6 +12,7 @@ abstract class _PostStore with Store {
   final profileStore = ProfileStore();
   String username;
   String picUrl;
+  int selectedIndex = -1;
 
   @observable
   ObservableList<Post> postsListFuture = ObservableList<Post>();

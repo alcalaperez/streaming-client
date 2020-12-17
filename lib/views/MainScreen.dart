@@ -21,7 +21,6 @@ class _HomePageState extends State<HomePage> {
   PostStore store;
   SharedPreferencesData sharedPref;
   PlayerWidget player = PlayerWidget(url: '', mode: PlayerMode.MEDIA_PLAYER);
-  List<bool> _selected = List.generate(100, (i) => false);
 
   @override
   void initState() {
@@ -128,24 +127,21 @@ class _HomePageState extends State<HomePage> {
                           return ListTile(
                               title: Text(post.actor,
                                   style: TextStyle(
-                                    color: _selected[index]
+                                    color: store.selectedIndex == index
                                         ? Colors.red
                                         : Colors.white,
                                     fontWeight: FontWeight.bold,
                                   )),
                               subtitle: Text(post.description,
                                   style: TextStyle(
-                                    color: _selected[index]
+                                    color: store.selectedIndex == index
                                         ? Colors.red
                                         : Colors.white,
                                     fontWeight: FontWeight.bold,
                                   )),
                               onTap: () {
                                 setState(() {
-                                  _selected = List.generate(
-                                      store.postsListFuture.length,
-                                      (i) => false);
-                                  _selected[index] = !_selected[index];
+                                  store.selectedIndex = index;
                                   player.url = post.audio;
                                   player = PlayerWidget(
                                       url: post.audio,
@@ -160,7 +156,7 @@ class _HomePageState extends State<HomePage> {
                                   },
                                   child: CircleAvatar(
                                       radius: 22,
-                                      backgroundColor: _selected[index]
+                                      backgroundColor: store.selectedIndex == index
                                           ? Colors.red
                                           : Colors.transparent,
                                       child: CircleAvatar(
@@ -176,7 +172,7 @@ class _HomePageState extends State<HomePage> {
             )));
   }
 
-  Future _refresh() {
-    return store.fetchPosts();
+  Future _refresh() async {
+    return await store.fetchPosts();
   }
 }
